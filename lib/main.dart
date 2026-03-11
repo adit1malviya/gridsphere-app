@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'auth_screens/splash_screen.dart';
 import 'services/background_service.dart'; // Import Background Service

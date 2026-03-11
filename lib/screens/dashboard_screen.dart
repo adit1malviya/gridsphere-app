@@ -45,6 +45,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String farmerName = "--";
   String lastOnline = "--";
   String deviceStatus = "Offline";
+  Map<String, String> deviceStatusMap = {};
   String deviceLocation = "--";
   bool isDeviceOffline = false;
   Map<String, dynamic>? sensorData;
@@ -373,6 +374,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
               isDeviceOffline = isOffline;
               deviceStatus = isOffline ? "Offline" : "Online";
+              deviceStatusMap[selectedDeviceId] = deviceStatus;
 
               sensorData = {
                 "air_temp": double.tryParse(reading['temp'].toString()) ?? 0.0,
@@ -638,7 +640,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const SizedBox(width: 10),
               Text(
-                "Field Information",
+                SessionManager().role == "agriculture"
+                    ? "Field Information"
+                    : "Industry Information",
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -657,9 +661,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     _buildInfoRow("Device ID:", selectedDeviceId),
                     const SizedBox(height: 12),
-                    _buildInfoRow("Farmer Name:", farmerName),
+                    _buildInfoRow(
+                      SessionManager().role == "agriculture"
+                          ? "Farmer Name:"
+                          : "Industry Name:",
+                      farmerName,
+                    ),
                     const SizedBox(height: 12),
                     _buildInfoRow("Location:", deviceLocation),
+                    const SizedBox(height: 12),
                   ],
                 ),
               ),
@@ -780,26 +790,95 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   if (_devices.isNotEmpty)
                     PopupMenuButton<String>(
                       onSelected: (String id) {
-                        final device = _devices
-                            .firstWhere((d) => d['d_id'].toString() == id);
+                        final device =
+                        _devices.firstWhere((d) => d['d_id'].toString() == id);
+
                         String loc = device['address']?.toString() ??
                             device['farm_name']?.toString() ??
                             "Field $id";
+
                         _switchDevice(id, loc);
                       },
                       color: Colors.white,
+                      elevation: 6,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                          borderRadius: BorderRadius.circular(14)),
                       itemBuilder: (BuildContext context) {
-                        return _devices.map((device) {
-                          return PopupMenuItem<String>(
-                            value: device['d_id'].toString(),
-                            child: Text(
-                              "Device ID: ${device['d_id']}",
-                              style: GoogleFonts.inter(color: Colors.black87),
+                        return [
+                          PopupMenuItem<String>(
+                            enabled: false,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Select Device",
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  "Current: Device ID: $selectedDeviceId ($deviceStatus)",
+                                  style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                      color: Colors.grey[600]),
+                                ),
+                              ],
                             ),
-                          );
-                        }).toList();
+                          ),
+                          const PopupMenuDivider(),
+
+                          ..._devices.map((device) {
+                            String id = device['d_id'].toString();
+                            bool isCurrent = id == selectedDeviceId;
+
+                            return PopupMenuItem<String>(
+                              value: id,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    isCurrent
+                                        ? Icons.check_circle
+                                        : Icons.radio_button_unchecked,
+                                    size: 18,
+                                    color: isCurrent
+                                        ? Colors.green
+                                        : Colors.grey,
+                                  ),
+                                  const SizedBox(width: 10),
+
+                                  Expanded(
+                                    child: Text(
+                                      "Device ID: $id",
+                                      style: GoogleFonts.inter(
+                                        fontWeight: isCurrent
+                                            ? FontWeight.w600
+                                            : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+
+                                  if (!isCurrent)
+                                    Row(
+                                      children: [
+                                        Icon(Icons.circle,
+                                            size: 8,
+                                            color: (deviceStatusMap[id] ?? "Offline") == "Online"
+                                                ? Colors.green
+                                                : Colors.red),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          deviceStatusMap[id] ?? "Offline",
+                                          style: GoogleFonts.inter(
+                                              fontSize: 11),
+                                        )
+                                      ],
+                                    )
+                                ],
+                              ),
+                            );
+                          }).toList()
+                        ];
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
