@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'login_screen.dart';
 import '../session_manager/session_manager.dart';
+import '../screens/alerts_screen.dart';
 import '../theme/app_theme.dart'; // Import AppTheme
 
 // Fallback GoogleFonts class
@@ -404,6 +405,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               "Active Devices",
                               "${userData["devices"] ?? 0} Sensors",
                               LucideIcons.radio),
+
+                          const SizedBox(height: 16),
+
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AlertsScreen(
+                                    deviceId: _activeDeviceId ?? "",
+                                  ),
+                                ),
+                              );
+                            },
+                            child: _buildInfoTile(
+                              "Alerts",
+                              "Configure Sensor Alerts",
+                              LucideIcons.bell,
+                            ),
+                          ),
 
                           const SizedBox(height: 16),
                           _buildRoleDropdown(), // Updated Dropdown Widget

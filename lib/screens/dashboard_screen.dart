@@ -818,7 +818,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  "Current: Device ID: $selectedDeviceId ($deviceStatus)",
+                                    "Current: Device ID: $selectedDeviceId",
                                   style: GoogleFonts.inter(
                                       fontSize: 12,
                                       color: Colors.grey[600]),
@@ -858,7 +858,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     ),
                                   ),
 
-                                  if (!isCurrent)
                                     Row(
                                       children: [
                                         Icon(Icons.circle,

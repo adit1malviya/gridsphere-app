@@ -57,7 +57,7 @@ class CustomBottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(
               icon: Icon(LucideIcons.activity), label: "Compliance"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_none), label: "Alerts"),
+              icon: Icon(LucideIcons.leaf), label: "Carbon"),
         ];
       case 'chemical':
         return const [
@@ -68,7 +68,7 @@ class CustomBottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(
               icon: Icon(LucideIcons.gauge), label: "Stability"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_none), label: "Alerts"),
+              icon: Icon(LucideIcons.leaf), label: "Carbon"),
         ];
       default:
         return const [
@@ -79,7 +79,7 @@ class CustomBottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(
               icon: Icon(LucideIcons.layers), label: "Soil"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_none), label: "Alerts"),
+              icon: Icon(LucideIcons.leaf), label: "Carbon"),
         ];
     }
   }
@@ -155,17 +155,7 @@ class CustomBottomNavBar extends StatelessWidget {
           );
       }
     } else if (index == 4) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AlertsScreen(
-            deviceId: deviceId,
-            sensorData: sensorData,
-            latitude: latitude,
-            longitude: longitude,
-          ),
-        ),
-      );
+      // Carbon placeholder (logic will be added later)
     }
   }
 
